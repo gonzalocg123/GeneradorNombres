@@ -1,0 +1,169 @@
+package com.example;
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+/**
+ * Clase que representa a una persona con atributos como nombre, apellidos, teléfono, email, empresa y género.
+ * Incluye validaciones para el formato del teléfono y el email.
+ */
+public class Persona {
+
+    /*
+    * nombre (lo vamos a generar del archivo)
+    * apellidos (lo vamos a generar del archivo)
+    * teléfono (regex + o no, mínimo 5 dígitos, máximo 12 dígitos)
+    * email (regex loquesea@loquesea.dos_letras_o_más)
+    * empresa (puede ser null)
+    * genero (hombre, mujer, prefiero no decirlo)
+    */
+
+    private String nombre;
+    private String apellidos;
+    private String telefono;
+    private String email;
+    private String empresa;
+    private Genero genero;
+
+    private final Pattern telefonoPattern = Pattern.compile("^[+]?[0-9]{5,12}$");
+
+    private final Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,}$");
+
+    // Constructor por defecto
+    public Persona() {
+    }
+
+    // Constructor con todos los parámetros
+    public Persona(String nombre, String apellidos, String telefono, String email, String empresa, Genero genero) {
+        if (!telefonoPattern.matcher(telefono).matches()) {
+            throw new IllegalArgumentException("El teléfono no cumple el formato requerido");
+        }
+        if (!emailPattern.matcher(email).matches()) {
+            throw new IllegalArgumentException("El email no cumple el formato requerido");
+        }
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.telefono = telefono;
+        this.email = email;
+        this.empresa = empresa;
+        this.genero = genero;
+    }
+
+    // Getters y Setters
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return this.apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getTelefono() {
+        return this.telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        if (!telefonoPattern.matcher(telefono).matches()) {
+            throw new IllegalArgumentException("El teléfono no cumple el formato requerido");
+        }
+        this.telefono = telefono;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        if (!emailPattern.matcher(email).matches()) {
+            throw new IllegalArgumentException("El email no cumple el formato requerido");
+        }
+        this.email = email;
+    }
+
+    public String getEmpresa() {
+        return this.empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
+    }
+
+    public Genero getGenero() {
+        return this.genero;
+    }
+
+    public void setGenero(Genero genero) {
+        this.genero = genero;
+    }
+
+    public Persona nombre(String nombre) {
+        setNombre(nombre);
+        return this;
+    }
+
+    public Persona apellidos(String apellidos) {
+        setApellidos(apellidos);
+        return this;
+    }
+
+    public Persona telefono(String telefono) {
+        setTelefono(telefono);
+        return this;
+    }
+
+    public Persona email(String email) {
+        setEmail(email);
+        return this;
+    }
+
+    public Persona empresa(String empresa) {
+        setEmpresa(empresa);
+        return this;
+    }
+
+    public Persona genero(Genero genero) {
+        setGenero(genero);
+        return this;
+    }
+
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Persona)) {
+            return false;
+        }
+        Persona persona = (Persona) o;
+        return Objects.equals(nombre, persona.nombre) && Objects.equals(apellidos, persona.apellidos) && Objects.equals(telefono, persona.telefono) && Objects.equals(email, persona.email) && Objects.equals(empresa, persona.empresa) && Objects.equals(genero, persona.genero);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, apellidos, telefono, email, empresa, genero);
+    }
+    
+    @Override
+    public String toString() {
+        return "Persona{" +
+                "nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", email='" + email + '\'' +
+                ", empresa='" + empresa + '\'' +
+                '}';
+    }
+
+    public Pattern getEmailPattern() {
+        return emailPattern;
+    }
+    
+}
