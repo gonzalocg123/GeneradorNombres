@@ -41,8 +41,8 @@ public class App {
 
         System.out.println("Fin.");
 
-        
-        // comprobar que funcione bien el dado
+/**
+ * // comprobar que funcione bien el dado
         // Primera Forma
         for(int i = 0; i < CARAS; i++) {
             numeros[i] = 0;
@@ -60,5 +60,7 @@ public class App {
         for (int i = 0; i < 100; i++) {
             System.out.println("Dado de 6 sale: " + lp.dado(CARAS) );
         }
+    
+ *  */
     }
 }
