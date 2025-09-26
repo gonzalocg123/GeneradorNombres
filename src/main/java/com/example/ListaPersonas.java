@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Clase que gestiona la carga de datos y la generación de personas.
@@ -25,6 +27,8 @@ public class ListaPersonas {
     private List<String> nombresFemeninos;
     private List<String> apellidos;
     private List<String> dominioEmails;
+
+    private final Pattern domainPattern = Pattern.compile("^[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     /**
      * Carga en una lista las líneas de un archivo de texto.
@@ -91,22 +95,22 @@ public class ListaPersonas {
      * @throws IllegalArgumentException Si el número de personas es inválido.
      */
     public int generaPersonas(int numeroPersonas) {
+
         if (this.nombresFemeninos == null || this.nombresMasculinos == null || this.apellidos == null || this.dominioEmails == null) {
             throw new IllegalStateException("No se han cargado los datos necesarios para generar personas");
         }
         if (numeroPersonas <= 0 || numeroPersonas > 100000) {
             throw new IllegalArgumentException("El número de personas a generar debe ser mayor que cero y menor o igual que 100000");
         }
-        // inicializar la lista de personas
+        
         this.personas = new ArrayList<>();
 
         for (int i = 0; i < numeroPersonas; i++) {
             personas.add(generaPersona());
         }
 
-
-        return 0;
-    }
+    return personas.size(); // ✅ Devolver cuántas personas se generaron
+}
 
     /**
      * Genera una persona aleatoria asignando nombre, apellidos, teléfono y email.
@@ -148,21 +152,67 @@ public class ListaPersonas {
          * Ejemplo: Gonzalo Chica Godino -> gchigod@dominio
          */
 
-        String nombreSinAcentos = p.getNombre().toLowerCase().replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u").replace("ñ", "n").replace("ç", "c");
-        String apellidosSinAcentos = p.getApellidos().toLowerCase().replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u").replace("ñ", "n").replace("ç", "c");
-        String[] partesApellidos = apellidosSinAcentos.split(" ");
-        String email = nombreSinAcentos.charAt(0) + "";
-        email += partesApellidos[0].substring(0, Math.min(3, partesApellidos[0].length()));
+        // crear email seguro
+        String nombreSinAcentos = quitarAcentos(p.getNombre().toLowerCase());
+        String apellidosSinAcentos = quitarAcentos(p.getApellidos().toLowerCase());
+        String[] partesApellidos = apellidosSinAcentos.split("\\s+");
+
+        String local = "" + nombreSinAcentos.charAt(0);
+        local += partesApellidos[0].substring(0, Math.min(3, partesApellidos[0].length()));
         if (partesApellidos.length > 1) {
-            email += partesApellidos[1].substring(0, Math.min(3, partesApellidos[1].length()));
+            local += partesApellidos[1].substring(0, Math.min(3, partesApellidos[1].length()));
         } else {
-            email += "xxx";
+            local += "xxx";
         }
-        email += "@" + dominioEmails.get(dado(dominioEmails.size()));
-        p.setEmail(email); 
+        // permitir sólo caracteres válidos en local-part
+        local = local.replaceAll("[^a-z0-9+_.-]", "");
+
+        // elegir dominio (limpiado en loadData)
+        String dominio = dominioEmails.get(dado(dominioEmails.size())).toLowerCase();
+        dominio = dominio.replaceAll("^\\.+", ""); // quitar puntos al inicio si existen por error
+
+        String email = local + "@" + dominio;
+
+        // intentar asignar; si falla, hacer fallback
+        try {
+            p.setEmail(email);
+        } catch (IllegalArgumentException e) {
+            // intentar reconstruir dominio con los últimos dos segmentos (co.uk -> co.uk)
+            String[] segs = dominio.split("\\.");
+            if (segs.length >= 2) {
+                String fallbackDomain = segs[segs.length-2] + "." + segs[segs.length-1];
+                String email2 = local + "@" + fallbackDomain;
+                try {
+                    p.setEmail(email2);
+                } catch (IllegalArgumentException e2) {
+                    // versión segura por defecto
+                    p.setEmail(local + "@example.com");
+                }
+            } else {
+                p.setEmail(local + "@example.com");
+            }
+        }
 
 
         return p;
     }
+
+    private String quitarAcentos(String texto) {
+        if (texto == null) return "";
+        String norm = Normalizer.normalize(texto, Normalizer.Form.NFD);
+        // eliminar marcas diacríticas
+        String sin = norm.replaceAll("\\p{M}", "");
+        // asegurarse de convertir ñ a n si fuese necesario
+        return sin.replace('ñ', 'n').replace('Ñ', 'N');
+    }
+
+
+    /** 
+     * Devuelve la lista de personas generadas.
+     * @return Lista de personas. 
+     */    
+    public List<Persona> getPersonas() {
+    return personas;
+}
 
 }

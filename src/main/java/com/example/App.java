@@ -16,12 +16,30 @@ public class App {
         System.out.println(p.toString());
         
         // generar una persona aleatoria
-        System.out.println( "Cargando datos de personas..." );
+        System.out.println("Cargando datos de personas...");
         ListaPersonas lp = new ListaPersonas();
-        lp.loadData("datos/nombre_mujeres.txt", "datos/nombre_hombres.txt", "datos/apellidos.txt", "datos/all_email.txt");
-        System.out.println( "Datos cargados." );
-        
 
+        try {
+            lp.loadData(
+                "generador-nombres/datos/nombre_mujeres.txt",
+                "generador-nombres/datos/nombre_hombres.txt",
+                "generador-nombres/datos/apellidos.txt",
+                "generador-nombres/datos/all_email.txt"
+            );
+            System.out.println("Datos cargados.");
+            
+            int totalGeneradas = lp.generaPersonas(10);
+            System.out.println("Se generaron " + totalGeneradas + " personas:");
+            
+            for (Persona persona : lp.getPersonas()) {
+                System.out.println(persona);
+            }
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+
+        System.out.println("Fin.");
 
         
         // comprobar que funcione bien el dado

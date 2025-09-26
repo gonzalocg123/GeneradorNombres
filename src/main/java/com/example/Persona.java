@@ -26,7 +26,7 @@ public class Persona {
 
     private final Pattern telefonoPattern = Pattern.compile("^[+]?[0-9]{5,12}$");
 
-    private final Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,}$");
+    private final Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     // Constructor por defecto
     public Persona() {
