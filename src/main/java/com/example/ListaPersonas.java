@@ -137,9 +137,23 @@ public class ListaPersonas {
             }
         }
 
-        // generar teléfono
-        String telefono = "+34" + (int)(Math.random() * 900000000 + 100000000);
-        p.setTelefono(telefono);
+        // generar teléfono con el dado
+        // Elegir longitud entre 5 y 12
+        int longitud = 5 + dado(8);
+        StringBuilder sb = new StringBuilder();
+
+        // 50% de probabilidad de incluir '+'
+        if (dado(2) == 0) {
+            sb.append("+");
+        }
+
+        // Generar los dígitos
+        for (int i = 0; i < longitud; i++) {
+            sb.append(dado(10)); // dígito 0-9
+        }
+
+        p.setTelefono(sb.toString());
+
 
         /**
          * generar email con primera letra del nombre y tres primeras letras de los dos apellidos. 
