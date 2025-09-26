@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Clase que gestiona la carga de datos y la generación de personas.
@@ -27,8 +26,6 @@ public class ListaPersonas {
     private List<String> nombresFemeninos;
     private List<String> apellidos;
     private List<String> dominioEmails;
-
-    private final Pattern domainPattern = Pattern.compile("^[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     /**
      * Carga en una lista las líneas de un archivo de texto.
