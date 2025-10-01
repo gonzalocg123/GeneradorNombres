@@ -8,23 +8,33 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Clase que gestiona la carga de datos y la generación de personas.
  * Contiene métodos para leer archivos de texto con nombres, apellidos y dominios de email,
  * así como para generar personas de forma aleatoria.
  */
+@XmlRootElement(name = "generador")
 public class ListaPersonas {
 
     // atributo con la lista "actual" de personas
     // esta es la información que me interesa
     /** Lista con las personas generadas */
+    @XmlElement
     private List<Persona> personas;
     
     // atributos para el generador
     // es algo temporal, no es la información que me interesa
+    @XmlTransient
     private List<String> nombresMasculinos;
+    @XmlTransient
     private List<String> nombresFemeninos;
+    @XmlTransient
     private List<String> apellidos;
+    @XmlTransient
     private List<String> dominioEmails;
 
     /**

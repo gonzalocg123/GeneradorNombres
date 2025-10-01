@@ -2,10 +2,13 @@ package com.example;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Clase que representa a una persona con atributos como nombre, apellidos, teléfono, email, empresa y género.
  * Incluye validaciones para el formato del teléfono y el email.
  */
+@XmlRootElement
 public class Persona {
 
     /*
@@ -154,11 +157,11 @@ public class Persona {
     @Override
     public String toString() {
         return "Persona{" +
-                "nombre='" + nombre + '\'' +
-                ", apellidos='" + apellidos + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", email='" + email + '\'' +
-                ", empresa='" + empresa + '\'' +
+                "nombre:'" + nombre + '\'' +
+                ", apellidos:'" + apellidos + '\'' +
+                ", telefono:'" + telefono + '\'' +
+                ", email:'" + email + '\'' +
+                ", empresa:'" + empresa + '\'' +
                 '}';
     }
 

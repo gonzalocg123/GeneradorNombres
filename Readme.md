@@ -1,4 +1,4 @@
-# Generador de Nombres
+# Generador de Personas
 
 ![Java](https://img.shields.io/badge/Java-17-blue?style=flat-square)
 ![Maven](https://img.shields.io/badge/Maven-Build-orange?style=flat-square)
