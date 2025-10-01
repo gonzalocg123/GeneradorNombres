@@ -1,0 +1,35 @@
+{
+   "ListaPersonas" : {
+      "persona" : [ {
+         "nombre" : "TERESA",
+         "apellidos" : "MARTIN NIETO",
+         "telefono" : "+32744896403",
+         "email" : "tmarnie@koszmail.pl",
+         "genero" : "otro"
+      }, {
+         "nombre" : "JESUS",
+         "apellidos" : "FERNANDEZ MARQUEZ",
+         "telefono" : "+015407082560",
+         "email" : "jfermar@fromrhodeisland.com",
+         "genero" : "neutro"
+      }, {
+         "nombre" : "MARTINA",
+         "apellidos" : "PASCUAL DIEZ",
+         "telefono" : "4952723065",
+         "email" : "mpasdie@mail2josh.com",
+         "genero" : "neutro"
+      }, {
+         "nombre" : "LIDIA",
+         "apellidos" : "GOMEZ ROMERO",
+         "telefono" : "+6806728",
+         "email" : "lgomrom@nightmail.com",
+         "genero" : "femenino"
+      }, {
+         "nombre" : "ALEJANDRO",
+         "apellidos" : "MARTINEZ ALONSO",
+         "telefono" : "261303833355",
+         "email" : "amaralo@webtopmail.com",
+         "genero" : "neutro"
+      } ]
+   }
+}

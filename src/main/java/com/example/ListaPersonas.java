@@ -8,22 +8,26 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+
 
 /**
  * Clase que gestiona la carga de datos y la generación de personas.
  * Contiene métodos para leer archivos de texto con nombres, apellidos y dominios de email,
  * así como para generar personas de forma aleatoria.
  */
-@XmlRootElement(name = "generador")
+@XmlRootElement(name = "ListaPersonas")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ListaPersonas {
 
     // atributo con la lista "actual" de personas
     // esta es la información que me interesa
     /** Lista con las personas generadas */
-    @XmlElement
+    @XmlElement(name= "persona")
     private List<Persona> personas;
     
     // atributos para el generador
@@ -116,7 +120,7 @@ public class ListaPersonas {
             personas.add(generaPersona());
         }
 
-    return personas.size(); // ✅ Devolver cuántas personas se generaron
+    return personas.size(); //Devolver cuántas personas se generaron
 }
 
     /**
@@ -135,8 +139,8 @@ public class ListaPersonas {
 
         // asignar nombre según género
         switch (genero) {
-            case HOMBRE -> p.setNombre(nombresMasculinos.get(dado(nombresMasculinos.size())));
-            case MUJER -> p.setNombre(nombresFemeninos.get(dado(nombresFemeninos.size())));
+            case MASCULINO -> p.setNombre(nombresMasculinos.get(dado(nombresMasculinos.size())));
+            case FEMENINO -> p.setNombre(nombresFemeninos.get(dado(nombresFemeninos.size())));
             default -> {
                 // prefiero no decirlo
                 if (dado(2) == 0) {
@@ -148,7 +152,6 @@ public class ListaPersonas {
         }
 
         // generar teléfono con el dado
-        // Elegir longitud entre 5 y 12
         int longitud = 5 + dado(8);
         StringBuilder sb = new StringBuilder();
 

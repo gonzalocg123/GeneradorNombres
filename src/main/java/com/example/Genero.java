@@ -1,16 +1,16 @@
 package com.example;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
-/**
- * Enum que representa los géneros posibles para una persona.
- */
 @XmlEnum
 public enum Genero {
-    @xmlEnumValue("hombre")
-    HOMBRE,
-    @xmlEnumValue("mujer")
-    MUJER,
-    @xmlEnumValue("prefiero no decirlo")
-    PREFIERO_NO_DECIRLO
+    @XmlEnumValue("masculino")
+    MASCULINO, 
+    @XmlEnumValue("femenino")
+    FEMENINO, 
+    @XmlEnumValue("otro")
+    OTRO, 
+    @XmlEnumValue("neutro")
+    NEUTRO
 }

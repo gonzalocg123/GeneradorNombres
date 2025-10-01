@@ -2,13 +2,28 @@ package com.example;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
- * Clase que representa a una persona con atributos como nombre, apellidos, teléfono, email, empresa y género.
- * Incluye validaciones para el formato del teléfono y el email.
- */
-@XmlRootElement
+ * 
+ * nombre (lo vamos a generar del archivo)
+apellidos (lo vamos a generar del archivo)
+teléfono (regex + o no, mínimo 5 dígitos, máximo 12)
+email (regex loquesea@loquesea.dos_letras_o_más)
+empresa  (puede ser NULL)
+genero (hombre, mujer, prefiero_no_decirlo)
+
+953 123 456
++34 953 12 34 56
++1 800 213 1235
+1 2214 000 9689
+*/
+
+@XmlRootElement(name="persona")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Persona {
 
     /*
@@ -27,8 +42,10 @@ public class Persona {
     private String empresa;
     private Genero genero;
 
+    @XmlTransient
     private final Pattern telefonoPattern = Pattern.compile("^[+]?[0-9]{5,12}$");
-
+    
+    @XmlTransient
     private final Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     // Constructor por defecto
