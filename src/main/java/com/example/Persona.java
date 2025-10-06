@@ -1,5 +1,5 @@
 package com.example;
-import java.util.Objects;
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -24,7 +24,7 @@ genero (hombre, mujer, prefiero_no_decirlo)
 
 @XmlRootElement(name="persona")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Persona {
+public class Persona implements Serializable {
 
     /*
     * nombre (lo vamos a generar del archivo)
@@ -53,20 +53,27 @@ public class Persona {
     }
 
     // Constructor con todos los parámetros
-    public Persona(String nombre, String apellidos, String telefono, String email, String empresa, Genero genero) {
-        if (!telefonoPattern.matcher(telefono).matches()) {
-            throw new IllegalArgumentException("El teléfono no cumple el formato requerido");
+    public Persona(
+        String nombre, String apellidos, 
+        String email, String telefono, Genero genero) {
+
+        if (!emailPattern.matcher(email).matches()){
+            throw new IllegalArgumentException(
+                "Formato de email incorrecto: " + email
+            );
         }
-        if (!emailPattern.matcher(email).matches()) {
-            throw new IllegalArgumentException("El email no cumple el formato requerido");
+
+        if (!telefonoPattern.matcher(telefono).matches()){
+            throw new IllegalArgumentException(
+                "Formato de teléfono incorrecto: "+ telefono);
         }
         this.nombre = nombre;
         this.apellidos = apellidos;
-        this.telefono = telefono;
         this.email = email;
-        this.empresa = empresa;
+        this.telefono = telefono;
         this.genero = genero;
     }
+
 
     // Getters y Setters
     public String getNombre() {
@@ -155,32 +162,17 @@ public class Persona {
 
     
     @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Persona)) {
-            return false;
-        }
-        Persona persona = (Persona) o;
-        return Objects.equals(nombre, persona.nombre) && Objects.equals(apellidos, persona.apellidos) && Objects.equals(telefono, persona.telefono) && Objects.equals(email, persona.email) && Objects.equals(empresa, persona.empresa) && Objects.equals(genero, persona.genero);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nombre, apellidos, telefono, email, empresa, genero);
-    }
-    
-    @Override
     public String toString() {
-        return "Persona{" +
-                "nombre:'" + nombre + '\'' +
-                ", apellidos:'" + apellidos + '\'' +
-                ", telefono:'" + telefono + '\'' +
-                ", email:'" + email + '\'' +
-                ", empresa:'" + empresa + '\'' +
-                '}';
+        return "{" +
+            " nombre:'" + getNombre() + "'" +
+            ", apellidos:'" + getApellidos() + "'" +
+            ", email:'" + getEmail() + "'" +
+            ", telefono:'" + getTelefono() + "'" +
+            ", genero:'" + getGenero() + "'" +
+            "}";
     }
+
+
 
     public Pattern getEmailPattern() {
         return emailPattern;

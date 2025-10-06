@@ -1,12 +1,20 @@
 package com.example;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
@@ -35,14 +43,14 @@ public class App {
 
         try {
             lp.loadData(
-                "generador-nombres/datos/nombre_mujeres.txt",
-                "generador-nombres/datos/nombre_hombres.txt",
-                "generador-nombres/datos/apellidos.txt",
-                "generador-nombres/datos/all_email.txt"
+                "datos/nombre_mujeres.txt",
+                "datos/nombre_hombres.txt",
+                "datos/apellidos.txt",
+                "datos/all_email.txt"
             );
             // System.out.println("Datos cargados.");
             
-            int totalGeneradas = lp.generaPersonas(5);
+            int totalGeneradas = lp.generaPersonas(100);
             System.out.println("Se generaron " + totalGeneradas + " personas:");
             
             for (Persona persona : lp.getPersonas()) {
@@ -54,7 +62,9 @@ public class App {
         }
 
         try {
-            System.setProperty("javax.xml.bind.JAXBContextFactory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+            System.setProperty(
+                "javax.xml.bind.JAXBContextFactory", 
+                "org.eclipse.persistence.jaxb.JAXBContextFactory");
             JAXBContext contexto = 
                 JAXBContext.newInstance(lp.getClass());
 
@@ -67,7 +77,9 @@ public class App {
                 "application/json");
             marshaller.setProperty(
                 MarshallerProperties.JSON_INCLUDE_ROOT, true);
-            marshaller.marshal(lp, new File("/home/gonzalo/Escritorio/DAM2/Acceso-A-Datos/generador-nombres/datos/personas.json"));
+            marshaller.marshal(
+                lp, new File("datos/personas.json"));
+
             Unmarshaller unmarshaller = 
                 contexto.createUnmarshaller();
             unmarshaller.setProperty(
@@ -75,16 +87,73 @@ public class App {
                 "application/json");
             unmarshaller.setProperty(
                 UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
-            ListaPersonas lp_xml = (ListaPersonas)
-                unmarshaller.unmarshal(new File("/home/gonzalo/Escritorio/DAM2/Acceso-A-Datos/generador-nombres/datos/personas.json"));
+            ListaPersonas lpXml = (ListaPersonas)
+                unmarshaller.unmarshal(new File("datos/personas.json"));
 
-            for (Persona p : lp_xml.getPersonas()) {
+            for (Persona p : lpXml.getPersonas()) {
                 System.out.println(p.toString());
             }
             
-        } catch (JAXBException e) {
+        } catch (Exception e) {
             System.out.println("Imposible generar el archivo XML: "+e.getMessage());
+            e.printStackTrace();
         }
+        
+        // Ejemplo de Serialización y Deserialización
+
+        try (FileOutputStream fos = new FileOutputStream("datos/personas.bin")){
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(lp);
+            // fos.close(); 
+            // No hace falta porque está el try con recursos
+        } catch (Exception e) {
+            System.out.println("imposible guardar lista de personas");
+        }
+        
+
+        try (FileInputStream fis = new FileInputStream("datos/personas.bin")) {
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            ListaPersonas lpBinario = (ListaPersonas)ois.readObject();
+            for (Persona p : lpBinario.getPersonas()) {
+                System.out.println(p.toString());
+            }
+        } catch (Exception e) {
+            System.out.println("Imposible mostrar la lista de personas");
+        }
+
+        // Guardar Excel 
+        try (Workbook wb = new XSSFWorkbook()) {
+            Sheet sheet = wb.createSheet("Personas");
+
+            // Cabecera
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("Nombre");
+            header.createCell(1).setCellValue("Apellidos");
+            header.createCell(2).setCellValue("Email");
+            header.createCell(3).setCellValue("Teléfono");
+            header.createCell(4).setCellValue("Género");
+
+            List<Persona> personas = lp.getPersonas();
+            for (int i = 0; i < personas.size(); i++) {
+                Persona p = personas.get(i);
+                Row row = sheet.createRow(i + 1);
+                row.createCell(0).setCellValue(p.getNombre());
+                row.createCell(1).setCellValue(p.getApellidos());
+                row.createCell(2).setCellValue(p.getEmail());
+                row.createCell(3).setCellValue(p.getTelefono());
+                row.createCell(4).setCellValue(p.getGenero().toString());
+            }
+
+            try (FileOutputStream fos = new FileOutputStream("datos/personas.xlsx")) {
+                wb.write(fos);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al guardar Excel: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+
 
 
         System.out.println("Fin.");

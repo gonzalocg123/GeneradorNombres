@@ -1,6 +1,7 @@
 package com.example;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,7 +23,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
  */
 @XmlRootElement(name = "ListaPersonas")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ListaPersonas {
+public class ListaPersonas implements Serializable {
 
     // atributo con la lista "actual" de personas
     // esta es la información que me interesa
@@ -110,10 +111,6 @@ public class ListaPersonas {
         if (this.nombresFemeninos == null || this.nombresMasculinos == null || this.apellidos == null || this.dominioEmails == null) {
             throw new IllegalStateException("No se han cargado los datos necesarios para generar personas");
         }
-        if (numeroPersonas <= 0 || numeroPersonas > 100000) {
-            throw new IllegalArgumentException("El número de personas a generar debe ser mayor que cero y menor o igual que 100000");
-        }
-        
         this.personas = new ArrayList<>();
 
         for (int i = 0; i < numeroPersonas; i++) {
@@ -237,6 +234,6 @@ public class ListaPersonas {
      */    
     public List<Persona> getPersonas() {
     return personas;
-}
+    }
 
 }
